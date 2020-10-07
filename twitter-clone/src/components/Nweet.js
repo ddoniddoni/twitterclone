@@ -8,7 +8,6 @@ const Nweet = ({ nweetObj, isOwner }) => {
 
   const onDeleteClick = async () => {
     const ok = window.confirm("Are you sure wnat to delete this?");
-    console.log(ok);
     if (ok) {
       await dbService.doc(`tweets/${nweetObj.id}`).delete();
     }
