@@ -1,7 +1,7 @@
 import Nweet from "components/Nweet";
-import { dbService } from "fbase";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { dbService, storageService } from "fbase";
+import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
@@ -20,12 +20,15 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await dbService.collection("tweets").add({
-      text: nweet,
-      createdAt: Date.now(),
-      creatorId: userObj.uid,
-    });
-    setNweet("");
+    const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
+    const response = await fileRef.putString(attachment, "data_url");
+    console.log(response);
+    // await dbService.collection("tweets").add({
+    //   text: nweet,
+    //   createdAt: Date.now(),
+    //   creatorId: userObj.uid,
+    // });
+    // setNweet("");
   };
 
   const onChange = (e) => {
@@ -65,7 +68,7 @@ const Home = ({ userObj }) => {
           maxLength={120}
         />
         <input type="file" accept="image/*" onChange={onFileChange} />
-        <input type="submit" value="New" />
+        <input type="submit" value="Tweet" />
         {attachment && (
           <div>
             <img src={attachment} width="50px" height="50px" />
